@@ -5,7 +5,7 @@ function App() {
   const [password, setPassword] = useState("");
 
   const register = async () => {
-    await fetch("http://localhost:5000/register", {
+    await fetch("https://login-backend-q71a.onrender.com/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -17,7 +17,7 @@ function App() {
   };
 
   const login = async () => {
-    const res = await fetch("http://localhost:5000/login", {
+    const res = await fetch("https://login-backend-q71a.onrender.com/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
