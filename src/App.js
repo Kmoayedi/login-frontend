@@ -7,7 +7,7 @@ function App() {
   const [welcome, setWelcome] = useState("");
 
   const register = async () => {
-    const res = await fetch("https://login-backend-q71a.onrender.com//register", {
+    const res = await fetch("https://login-backend-q71a.onrender.com/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
