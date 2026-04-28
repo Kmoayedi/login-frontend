@@ -7,7 +7,7 @@ function App() {
   const [welcome, setWelcome] = useState("");
 
   const register = async () => {
-    const res = await fetch("https://DEIN-BACKEND.onrender.com/register", {
+    const res = await fetch("https://login-backend-q71a.onrender.com//register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,7 +20,7 @@ function App() {
   };
 
   const login = async () => {
-    const res = await fetch("https://DEIN-BACKEND.onrender.com/login", {
+    const res = await fetch("https://login-backend-q71a.onrender.com/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
