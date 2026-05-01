@@ -3,31 +3,56 @@ import React, { useState } from "react";
 function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
 
   const login = async () => {
-    try {
-      const res = await fetch("https://DEIN-BACKEND.onrender.com/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+     setLoading(true);      // 👈 Start loading
+     setError("");          // 👈 Fehler zurücksetzen
 
-      const data = await res.json();
+  //Payment button
+  const buy = async () => {
+  const res = await fetch("https://DEIN-BACKEND.onrender.com/create-checkout", {
+    method: "POST",
+  });
 
-      if (data.token) {
-        setError("");
-        alert("Willkommen!");
-      } else {
-        setError(data.error);
-      }
-    } catch (err) {
-      setError("Server nicht erreichbar");
+  const data = await res.json();
+  window.location.href = data.url;
+};
+
+  // Passwort prüfen
+    if (password.length < 6) {
+
+      setError("Passwort zu kurz");
+      setLoading(false);
+      return;
     }
-  };
+
+  try {
+    const res = await fetch("https://DEIN-BACKEND.onrender.com/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (data.token) {
+      localStorage.setItem("token", data.token); // 👈 Speichern
+      alert("Login erfolgreich!");
+    } else {
+      setError(data.error);
+    }
+  } catch (err) {
+    setError("Server nicht erreichbar");
+  }
+
+  setLoading(false); // 👈 Ende loading
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-700 to-blue-700">
@@ -77,9 +102,9 @@ function App() {
         {/* Button */}
         <button
           onClick={login}
-          className="w-full bg-white text-black py-3 rounded-lg font-semibold hover:scale-105 transition"
+          className="w-full bg-white text-black py-3 rounded-lg font-semibold"
         >
-          Einloggen
+          {loading ? "Lädt..." : "Einloggen"}
         </button>
 
         <p className="text-center text-sm mt-4 opacity-70">
