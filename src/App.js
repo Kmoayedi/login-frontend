@@ -6,66 +6,76 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
+  const [mode, setMode] = useState("login"); // login | register
 
+  const API = "https://DEIN-BACKEND.onrender.com";
 
-  const login = async () => {
-     setLoading(true);      // 👈 Start loading
-     setError("");          // 👈 Fehler zurücksetzen
+  const auth = async () => {
+    setLoading(true);
+    setError("");
 
-  //Payment button
-//   const buy = async () => {
-//   const res = await fetch("https://DEIN-BACKEND.onrender.com/create-checkout", {
-//     method: "POST",
-//   });
-
-//   const data = await res.json();
-//   window.location.href = data.url;
-// };
-
-  // Passwort prüfen
     if (password.length < 6) {
-
-      setError("Passwort zu kurz");
+      setError("Passwort muss mindestens 6 Zeichen haben");
       setLoading(false);
       return;
     }
 
-  try {
-    const res = await fetch("https://DEIN-BACKEND.onrender.com/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    const endpoint = mode === "login" ? "/login" : "/register";
 
-    const data = await res.json();
+    try {
+      const res = await fetch(API + endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (data.token) {
-      localStorage.setItem("token", data.token); // 👈 Speichern
-      alert("Login erfolgreich!");
-    } else {
-      setError(data.error);
+      const data = await res.json();
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        alert(mode === "login" ? "Login erfolgreich" : "Registrierung erfolgreich");
+      } else {
+        setError(data.error || "Fehler");
+      }
+    } catch (err) {
+      setError("Server nicht erreichbar");
     }
-  } catch (err) {
-    setError("Server nicht erreichbar");
-  }
 
-  setLoading(false); // 👈 Ende loading
-};
+    setLoading(false);
+  };
+
+  const buyPremium = async () => {
+    try {
+      const res = await fetch(API + "/create-checkout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } catch (e) {
+      alert("Payment Fehler");
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-700 to-blue-700">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-700 to-blue-700 p-4">
 
-      {/* Glow Effekt */}
-      <div className="absolute w-96 h-96 bg-purple-500 blur-3xl opacity-30 rounded-full top-10 left-10"></div>
+      {/* Ad Banner */}
+      <div className="w-full max-w-md mb-4 bg-yellow-300 text-black p-3 rounded-xl text-center font-semibold">
+        🔥 Werbung: Upgrade auf Premium und entferne Ads!
+      </div>
 
       {/* Card */}
-      <div className="relative backdrop-blur-lg bg-white/10 p-10 rounded-3xl shadow-2xl w-96 text-white border border-white/20">
+      <div className="relative backdrop-blur-lg bg-white/10 p-10 rounded-3xl shadow-2xl w-full max-w-md text-white border border-white/20">
 
-        <h2 className="text-3xl font-bold text-center mb-6">
-          Willkommen zurück 👋
+        <h2 className="text-3xl font-bold text-center mb-2">
+          {mode === "login" ? "Willkommen zurück 👋" : "Account erstellen 🚀"}
         </h2>
+
+        <p className="text-center text-sm mb-6 opacity-70">
+          {mode === "login"
+            ? "Melde dich an, um fortzufahren"
+            : "Erstelle deinen kostenlosen Account"}
+        </p>
 
         {/* Email */}
         <input
@@ -92,25 +102,28 @@ function App() {
           </span>
         </div>
 
-        {/* Fehler */}
-        {error && (
-          <p className="text-red-300 mb-4 text-sm">
-            {error}
-          </p>
-        )}
+        {error && <p className="text-red-300 mb-4 text-sm">{error}</p>}
 
-        {/* Button */}
         <button
-          onClick={login}
+          onClick={auth}
           className="w-full bg-white text-black py-3 rounded-lg font-semibold"
         >
-          {loading ? "Lädt..." : "Einloggen"}
+          {loading ? "Lädt..." : mode === "login" ? "Einloggen" : "Registrieren"}
         </button>
-        {/* <button onClick={buy}>
-          Premium kaufen
-        </button> */}
-        <p className="text-center text-sm mt-4 opacity-70">
-          Noch kein Account? Registrieren
+
+        <button
+          onClick={buyPremium}
+          className="w-full mt-3 bg-yellow-400 text-black py-2 rounded-lg font-semibold"
+        >
+          💎 Premium kaufen
+        </button>
+
+        <p className="text-center text-sm mt-4 opacity-70 cursor-pointer"
+           onClick={() => setMode(mode === "login" ? "register" : "login")}
+        >
+          {mode === "login"
+            ? "Noch kein Account? Registrieren"
+            : "Schon Account? Einloggen"}
         </p>
       </div>
     </div>
