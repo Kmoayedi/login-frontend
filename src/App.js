@@ -3,84 +3,88 @@ import React, { useState } from "react";
 function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [welcome, setWelcome] = useState("");
-
-  const register = async () => {
-    const res = await fetch("https://login-backend-q71a.onrender.com/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, email, password }),
-  });
-
-  const data = await res.json();
-  setWelcome(data.message);
-  };
+  const [show, setShow] = useState(false);
+  const [error, setError] = useState("");
 
   const login = async () => {
-    const res = await fetch("https://login-backend-q71a.onrender.com/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("https://DEIN-BACKEND.onrender.com/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.token) {
-      alert("Login erfolgreich");
-    } else {
-      alert(data.error);
+      if (data.token) {
+        setError("");
+        alert("Willkommen!");
+      } else {
+        setError(data.error);
+      }
+    } catch (err) {
+      setError("Server nicht erreichbar");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-700 to-blue-700">
 
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-80">
+      {/* Glow Effekt */}
+      <div className="absolute w-96 h-96 bg-purple-500 blur-3xl opacity-30 rounded-full top-10 left-10"></div>
 
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Willkommen 👋
+      {/* Card */}
+      <div className="relative backdrop-blur-lg bg-white/10 p-10 rounded-3xl shadow-2xl w-96 text-white border border-white/20">
+
+        <h2 className="text-3xl font-bold text-center mb-6">
+          Willkommen zurück 👋
         </h2>
+
+        {/* Email */}
         <input
-           className="w-full p-3 mb-4 border rounded-lg"
-           placeholder="Name"
-           onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          type="email"
           placeholder="E-Mail"
+          className="w-full p-3 mb-4 rounded-lg bg-white/20 placeholder-white outline-none focus:ring-2 focus:ring-white"
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <input
-          type="password"
-          className="w-full p-3 mb-6 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
-          placeholder="Passwort"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        {/* Passwort */}
+        <div className="relative">
+          <input
+            type={show ? "text" : "password"}
+            placeholder="Passwort"
+            className="w-full p-3 mb-4 rounded-lg bg-white/20 placeholder-white outline-none focus:ring-2 focus:ring-white"
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <button
-          onClick={login}
-          className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition mb-3"
-        >
-          Login
-        </button>
+          <span
+            className="absolute right-3 top-3 cursor-pointer"
+            onClick={() => setShow(!show)}
+          >
+            👁️
+          </span>
+        </div>
 
-        <button
-          onClick={register}
-          className="w-full border border-indigo-600 text-indigo-600 py-3 rounded-lg hover:bg-indigo-50 transition"
-        >
-          Registrieren
-        </button>
-        {welcome && (
-          <p className="mt-4 text-green-600 font-semibold">
-          {welcome}
+        {/* Fehler */}
+        {error && (
+          <p className="text-red-300 mb-4 text-sm">
+            {error}
           </p>
         )}
+
+        {/* Button */}
+        <button
+          onClick={login}
+          className="w-full bg-white text-black py-3 rounded-lg font-semibold hover:scale-105 transition"
+        >
+          Einloggen
+        </button>
+
+        <p className="text-center text-sm mt-4 opacity-70">
+          Noch kein Account? Registrieren
+        </p>
       </div>
     </div>
   );
