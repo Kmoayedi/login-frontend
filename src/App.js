@@ -106,7 +106,9 @@ function App() {
         >
           {loading ? "Lädt..." : "Einloggen"}
         </button>
-
+        <button onClick={buy}>
+          Premium kaufen
+        </button>
         <p className="text-center text-sm mt-4 opacity-70">
           Noch kein Account? Registrieren
         </p>
