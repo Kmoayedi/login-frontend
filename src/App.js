@@ -6,7 +6,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
-  const [error, setError] = useState("");
+
 
   const login = async () => {
      setLoading(true);      // 👈 Start loading
