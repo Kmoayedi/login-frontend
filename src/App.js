@@ -13,14 +13,14 @@ function App() {
      setError("");          // 👈 Fehler zurücksetzen
 
   //Payment button
-  const buy = async () => {
-  const res = await fetch("https://DEIN-BACKEND.onrender.com/create-checkout", {
-    method: "POST",
-  });
+//   const buy = async () => {
+//   const res = await fetch("https://DEIN-BACKEND.onrender.com/create-checkout", {
+//     method: "POST",
+//   });
 
-  const data = await res.json();
-  window.location.href = data.url;
-};
+//   const data = await res.json();
+//   window.location.href = data.url;
+// };
 
   // Passwort prüfen
     if (password.length < 6) {
@@ -106,9 +106,9 @@ function App() {
         >
           {loading ? "Lädt..." : "Einloggen"}
         </button>
-        <button onClick={buy}>
+        {/* <button onClick={buy}>
           Premium kaufen
-        </button>
+        </button> */}
         <p className="text-center text-sm mt-4 opacity-70">
           Noch kein Account? Registrieren
         </p>
