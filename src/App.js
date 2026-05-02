@@ -3,6 +3,7 @@ import React, { useState } from "react";
 function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
@@ -26,7 +27,7 @@ function App() {
       const res = await fetch(API + endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       const data = await res.json();
@@ -93,7 +94,14 @@ function App() {
             className="w-full p-3 mb-4 rounded-lg bg-white/20 placeholder-white outline-none focus:ring-2 focus:ring-white"
             onChange={(e) => setPassword(e.target.value)}
           />
-
+        {mode === "register" && (
+          <input
+            type="text"
+            placeholder="Name"
+            className="w-full p-3 mb-4 rounded-lg bg-white/20"
+            onChange={(e) => setName(e.target.value)}
+          />
+        )}
           <span
             className="absolute right-3 top-3 cursor-pointer"
             onClick={() => setShow(!show)}
