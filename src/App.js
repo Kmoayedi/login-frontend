@@ -26,10 +26,10 @@ function App() {
       });
 
       const data = await res.json();
-      console.log(data);
+      console.log("LOGIN RESPONSE:", data);
 
       if (data.token) {
-        loadUser();
+        await loadUser();
       } else {
         setError(data.error || "Fehler");
       }
