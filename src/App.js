@@ -8,7 +8,7 @@ function App() {
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("login"); // login | register
 
-  const API = "https://DEIN-BACKEND.onrender.com";
+  const API = "https://login-backend-q71a.onrender.com";
 
   const auth = async () => {
     setLoading(true);
