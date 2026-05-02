@@ -6,7 +6,6 @@ function App() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [show, setShow] = useState(false);
   const [mode, setMode] = useState("login");
   const [user, setUser] = useState(null);
   const [amount, setAmount] = useState(0);
