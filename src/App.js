@@ -8,6 +8,8 @@ function App() {
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("login"); // login | register
+  const [user, setUser] = useState(null);
+  const [amount, setAmount] = useState(0);
 
   const API = "https://login-backend-q71a.onrender.com";
 
@@ -23,27 +25,35 @@ function App() {
 
     const endpoint = mode === "login" ? "/login" : "/register";
 
-    try {
-      const res = await fetch(API + endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
+   
+    const res = await fetch(API + endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
 
-      const data = await res.json();
-
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        alert(mode === "login" ? "Login erfolgreich" : "Registrierung erfolgreich");
-      } else {
-        setError(data.error || "Fehler");
-      }
-    } catch (err) {
-      setError("Server nicht erreichbar");
+    const data = await res.json();
+      
+    if (data.token) {
+        loadUser();
     }
-
-    setLoading(false);
   };
+  
+  const loadUser = async () => {
+    const res = await fetch(API + "/me");
+    const data = await res.json();
+    setUser(data);
+  };
+
+  const deposit = async () => {
+    await fetch(API + "/deposit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: Number(amount) }),
+    });
+
+    loadUser();
+  }
 
   const buyPremium = async () => {
     try {
@@ -137,5 +147,57 @@ function App() {
     </div>
   );
 }
+
+ // ================= DASHBOARD =================
+  if (user) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white p-8">
+        <h1 className="text-3xl mb-6">Dashboard</h1>
+
+        <div className="bg-white/10 p-6 rounded-xl mb-6">
+          <p>Name: {user.name}</p>
+          <p>Email: {user.email}</p>
+          <p className="text-xl mt-2">💰 Guthaben: {user.balance} €</p>
+        </div>
+
+        <div className="bg-white/10 p-6 rounded-xl">
+          <input
+            type="number"
+            placeholder="Betrag"
+            className="p-2 text-black"
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <button onClick={deposit} className="ml-3 bg-green-500 px-4 py-2 rounded">
+            Einzahlen
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ================= LOGIN =================
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-700 to-blue-700">
+      <div className="bg-white/10 p-10 rounded-xl text-white">
+        <h2 className="text-2xl mb-4">{mode}</h2>
+
+        <input placeholder="Email" onChange={(e)=>setEmail(e.target.value)} className="block mb-2 p-2 text-black" />
+        <input placeholder="Password" onChange={(e)=>setPassword(e.target.value)} className="block mb-2 p-2 text-black" />
+
+        {mode === "register" && (
+          <input placeholder="Name" onChange={(e)=>setName(e.target.value)} className="block mb-2 p-2 text-black" />
+        )}
+
+        <button onClick={auth} className="bg-white text-black px-4 py-2">
+          {mode}
+        </button>
+
+        <p onClick={()=>setMode(mode === "login" ? "register" : "login")}
+           className="mt-4 cursor-pointer">
+          Switch
+        </p>
+      </div>
+    </div>
+  );
 
 export default App;
